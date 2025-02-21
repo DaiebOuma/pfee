@@ -109,19 +109,27 @@ export default function App() {
   const [userLocation, setUserLocation] = useState(null)
   const [clickedPosition, setClickedPosition] = useState(null)
   const [error, setError] = useState(null)
+  const [points, setPoints] = useState([]);
 
   // api
 const [shapes, setShapes] = useState(null);
 useEffect(() => {
   axios.get("http://localhost:5000/api/shapes")
-      .then(response => {
-        console.log("✅ Données reçues :", response.data); 
-          setShapes(response.data);
-      })
-      .catch(error => {
-          console.error("Erreur lors du chargement des shapes :", error);
-      });
+    .then(response => {
+      console.log("✅ Données reçues :", response.data);
+
+      // Séparer les polygones et les points
+      const polygons = response.data.features.filter(f => f.geometry.type === "Polygon");
+      const pointMarkers = response.data.features.filter(f => f.geometry.type === "Point");
+
+      setShapes({ type: "FeatureCollection", features: polygons });
+      setPoints(pointMarkers); // Stocke uniquement les points
+    })
+    .catch(error => {
+      console.error("Erreur lors du chargement des shapes :", error);
+    });
 }, []);
+
 
   const resetMapState = () => {
     setSelectedLocation(null)
@@ -158,7 +166,20 @@ useEffect(() => {
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           
-          {shapes && <GeoJSON data={shapes} />}
+          {/* Affichage des polygones en GeoJSON */}
+{shapes && <GeoJSON data={shapes} />}
+
+{/* Affichage des points en tant que Markers */}
+{points.map((point, index) => (
+  <Marker 
+    key={index} 
+    position={[point.geometry.coordinates[1], point.geometry.coordinates[0]]} 
+    icon={customIcon}
+  >
+    <Popup>{point.properties.name}</Popup>
+  </Marker>
+))}
+
           <ChangeView
             center={selectedLocation ? [selectedLocation.lat, selectedLocation.lon] : userLocation || defaultPosition}
             zoom={selectedLocation || userLocation ? 13 : defaultZoom}
