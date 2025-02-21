@@ -1,0 +1,84 @@
+
+.btnpos{
+  
+    position: absolute;
+    right: 10px;
+    top: "50%";
+    transform: translateY(-130%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-Size: 18px;
+    color: #888;
+
+}
+.col1{
+text-Align: center;
+ padding: 20px;
+}
+.barre-rech{
+  position: relative;
+   width: 300px;
+    margin: auto;
+}
+.placehold{
+
+    width: 100%;
+    padding: 10px;
+    font-Size: 16px;
+    border-Radius: 5px;
+    border: 1px solid #ccc;
+  
+}
+.chargement{
+   font-Size: 12px;
+    color: gray;
+}
+.ul{
+  
+    list-Style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    width: 100%;
+    background: #fff;
+    box-Shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-Index: 1000;
+    max-Height: 200px;
+    overflow-y: auto;
+    border-Radius: 5px;
+  
+}
+.separation{
+  padding: 10px;
+   cursor: pointer;
+  border-Bottom: 1px solid #ddd;
+}
+.maposition{
+  
+    margin: 10px auto;
+    display: block;
+    padding: 10px 20px;
+    font-Size: 16px;
+    cursor: pointer;
+    border-Radius: 5px;
+    border: none;
+    background:#007bff;
+    color:#fff;
+    transition: background 0.3s;
+  
+}
+.map{
+
+    height: 55vh;
+    width: 50%;
+    border-Radius: 10px;
+    box-Shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+ 
+}
+.colmap{
+ display: flex;
+  justify-Content: center;
+   margin-Top: 20px ;
+
+}
