@@ -10,6 +10,33 @@ app.use(express.json());
 const pool = require("./db");
 const PORT = process.env.PORT || 5000;
 
+//route de cover
+app.get("/api/coverage_areas", async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT id, name, ST_AsGeoJSON(geom) AS geometry FROM coverage_areas
+        `);
+
+        // Transformer les résultats en GeoJSON
+        const geoJSON = {
+            type: "FeatureCollection",
+            features: result.rows.map(row => ({
+                type: "Feature",
+                properties: {
+                    id: row.id,
+                    name: row.name
+                },
+                geometry: JSON.parse(row.geometry)
+            }))
+        };
+
+        res.json(geoJSON);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des coverage areas :", error);
+        res.status(500).json({ error: "Erreur lors de la récupération des données" });
+    }
+});
+
 
 // Route pour récupérer les shapes en GeoJSON
 app.get("/api/shapes", async (req, res) => {

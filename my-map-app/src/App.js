@@ -12,14 +12,23 @@ import axios from "axios"
 // Assume these imports are available
 import iconUrl from "leaflet/dist/images/marker-icon.png"
 import iconShadow from "leaflet/dist/images/marker-shadow.png"
-
+const redIconUrl = "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png";
 const customIcon = new L.Icon({
   iconUrl,
   shadowUrl: iconShadow,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-})
+});
+
+const customIcon1 = new L.Icon({
+  iconUrl: redIconUrl, // 🔥 Nouvelle icône rouge
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+});
+
 
 
 const defaultPosition = [33.8869, 9.5375]
@@ -111,7 +120,21 @@ export default function App() {
   const [error, setError] = useState(null)
   const [points, setPoints] = useState([]);
 
-  // api
+  
+// api 2
+const [coverageAreas, setCoverageAreas] = useState(null);
+useEffect(() => {
+  axios.get("http://localhost:5000/api/coverage_areas")
+      .then(response => {
+          console.log("✅ Coverage Areas reçues :", response.data);
+          setCoverageAreas(response.data);
+      })
+      .catch(error => {
+          console.error("Erreur lors du chargement des coverage areas :", error);
+      });
+}, []);
+
+// api
 const [shapes, setShapes] = useState(null);
 useEffect(() => {
   axios.get("http://localhost:5000/api/shapes")
@@ -129,6 +152,7 @@ useEffect(() => {
       console.error("Erreur lors du chargement des shapes :", error);
     });
 }, []);
+
 
 
   const resetMapState = () => {
@@ -168,6 +192,20 @@ useEffect(() => {
           
           {/* Affichage des polygones en GeoJSON */}
 {shapes && <GeoJSON data={shapes} />}
+{coverageAreas && (
+  <GeoJSON 
+    data={coverageAreas} 
+    style={{
+      color: "black", // Bordure bleue
+      weight: 2, // Épaisseur
+      fillColor: "lightblue", // Remplissage bleu clair
+      fillOpacity: 0.4 // Transparence
+    }}
+    onEachFeature={(feature, layer) => {
+      layer.bindPopup(`<b>${feature.properties.name}</b>`);
+    }}
+  />
+)}
 
 {/* Affichage des points en tant que Markers */}
 {points.map((point, index) => (
@@ -221,7 +259,7 @@ useEffect(() => {
             <Popup>Tozeur-Kebili-Gabes-Gafsa</Popup>
           </Polygon>
           {additionalCities.map((city) => (
-            <Marker key={city.name} position={city.coords} icon={customIcon}>
+            <Marker key={city.name} position={city.coords} icon={customIcon1} >
               <Popup>{city.name}</Popup>
             </Marker>
           ))}
